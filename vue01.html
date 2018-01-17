@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="vue.js"></script>
+<script>
+    window.onload=function () {
+        new Vue({
+            el:'#box', //选择器
+            data:{     //数据
+                msg:'你好，vue',
+                int:12,
+                bool:true,
+                arr:['my','name','is'],
+                json:{a:'my',b:'name',c:'is'}
+            },
+            methods:{  //事件绑定方法
+                show:function(){
+                    alert(this.msg);//设置弹出消息为当前msg对象
+                }
+            }
+        });
+    };
+</script>
+</head>
+<body>
+<div id="box">
+    <input type="text" v-model="msg">
+    <br>
+    {{msg}}
+    <br>
+    {{int}}
+    <br>
+    {{bool}}
+    <br>
+    {{arr}}
+    <br>
+    <ul>
+        <!--2.0以后版本弃用了{{$index}}-->
+        <li v-for="(value,index) in arr">
+            {{value}}  {{index}}
+        </li>
+    </ul>
+    <ul>
+        <!--2.0以后版本弃用了{{$index}}  {{$key}}-->
+        <li v-for="(value,key,index) in json">
+            {{value}}  {{key}} {{index}}
+        </li>
+    </ul>
+
+    <br>
+
+    <input type="button" value="弹出提示" v-on:click="show()">
+</div>
+</body>
+</html>

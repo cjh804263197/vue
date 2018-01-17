@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="vue.js"></script>
+<script>
+    window.onload=function () {
+        new Vue({
+            el:'#box', //选择器
+            data:{     //数据
+                hide:false
+            },
+            methods:{  //事件绑定方法
+                show:function(){
+                    this.hide=!this.hide;
+                }
+            }
+        });
+    };
+</script>
+</head>
+<body>
+<div id="box">
+    <input type="button" value="弹出提示" v-on:click="show()">
+    <div style="width: 100px;height: 100px;background-color: aquamarine" v-show="hide">
+
+    </div>
+</div>
+</body>
+</html>
