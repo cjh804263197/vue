@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>留言板</title>
+    <link rel="stylesheet" href="lib/bootstrap.min.css">
+    <script src="lib/jquery-1.7.2.js"></script>
+    <script src="lib/bootstrap.js"></script>
+    <script src="lib/vue.js"></script>
+    <script src="lib/av.js"></script>
+   
+    <!-- 表示文档结构已经加载完成（不包含图片等非文字媒体文件） -->
+    <script>
+        //声明类型
+        var Blog;
+        var query;
+        $(document).ready(function(){
+            var APP_ID = 'iaBGcTArJmxORDYabRD8nstz-gzGzoHsz';
+            var APP_KEY = 'SLhUVOMPCfhguq3lLuonLSS2';
+
+            //初始化LeanCloud
+            AV.init({
+                appId: APP_ID,
+                appKey: APP_KEY
+            });
+
+            //注册该类型，也就是在LeanCloud上创建一个名为Blog的表
+            Blog = AV.Object.extend('Blog');
+
+            //初始化查询
+            query = new AV.Query('Blog');
+        }
+
+        )
+    
+    // 指示页面包含图片等文件在内的所有元素都加载完成
+    window.onload=function () {
+        var vm = new Vue({
+            el:'#box', //选择器
+            data:{     //数据
+                resultData:[], //存放展示结果数组 
+                title:'', //临时存放提交title
+                content:'', //临时存放提交content
+                bloger:'', //临时存放提交bloger
+                objectId:''
+            },
+            methods:{  //事件绑定方法 注意方法名称最好避开一元运算符，比如方法名为delete,会报avoid using JavaScript unary operator as property name错误
+                
+             addBlog:function(){//添加留言方法
+                this.resultData.push({
+                    title:this.title,
+                    content:this.content,
+                    bloger:this.bloger
+                });
+                //向leanCloud中添加数据
+                var blog = new Blog();
+                blog.set('title',this.title);
+                blog.set('content',this.content);
+                blog.set('bloger',this.bloger);
+                //执行保存操作
+                blog.save().then(function (todo) {//成功
+                    console.log('objectId is ' + todo.id);
+                    alert('保存成功！');
+                }, function (error) {//失败
+                    console.error(error);
+                });
+                this.initParam();
+             },
+                deleteBlog:function(id){//删除方法
+                    if(id!=''){ //单个删除
+                        var todo = AV.Object.createWithoutData('Blog', id);
+                        todo.destroy().then(function (success) {
+                         // 删除成功
+                         alert('删除成功！');
+                        }, function (error) {
+                        // 删除失败
+                        alert('删除失败！')
+                        });
+                    }else{//批量删除
+                        // 执行 CQL 语句实现删除一个 Todo 对象
+                         AV.Query.doCloudQuery('delete from Blog').then(function () {
+                        // 删除成功
+                        alert('全部删除成功！');
+                        }, function (error) {
+                        // 异常处理
+                        alert('全部删除失败！');
+                      });
+                    }
+                    vm.searchBlog('');
+                },
+                searchBlog:function(para){//查询方法
+                    console.log('query');
+                    query.contains('title',para);
+                    query.find().then(function (results) {
+                        console.log('success');
+                        //var blog = results[0];
+                        vm.resultData=[];
+                        results.forEach(blog => {
+                            //console.log(blog.toJSON());
+                            vm.resultData.push(blog.toJSON());
+                        });
+                        }, function (error) {
+                            console.log(error);
+                    });
+                },
+                initParam:function(){//初始化临时存放变量的值，以便于添加之后，再次添加时显示上次添加的值
+                    this.title='';
+                    this.content='';
+                    this.bloger='';
+                }
+            }
+        });
+
+        vm.searchBlog('');
+    };
+</script>
+</head>
+<body>
+<div id="box" class="container" >
+    <!-- 页面标题 -->
+	<div class="page-header">
+            <div class="page-title" style="padding-bottom: 5px">
+                <ol class="breadcrumb">
+                    <li class="active">留言板</li>
+                </ol>
+            </div>
+            <div class="page-stats"></div>
+    </div>
+
+    <!-- 查询检索以及添加 -->
+	<div class="row page-search">
+		<div class="col-md-12">
+			<ul class="list-unstyled list-inline">
+				<li><input type="text" id="searchTitleId" class="form-control"
+					placeholder="留言标题名称搜索"></li>
+				<li class='O1'><button type="button"
+						class="btn btn-primary btn-search">查询</button></li>
+				<li class='O2'><button type="button"
+                        class="btn btn-primary btn-add" 
+                        data-toggle="modal" data-target="#addDialog">添加</button></li>
+                <li class='O3'><button type="button"
+                            class="btn btn-danger" v-show="resultData.length!=0"
+                            data-toggle="modal" data-target="#toastDialog"
+                            v-on:click="objectId=''">全部删除</button></li>
+				</ul>
+			</div>
+        </div>
+        
+        <!-- 查询结果表格 -->
+		<div class="row col-md-12">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <!-- <th>选择</th> text-nowrap -->
+                            <th nowrap="nowrap">序号</th>
+                            <th nowrap="nowrap">留言标题</th>
+                            <th nowrap="nowrap">留言内容</th>
+                            <th nowrap="nowrap">留言人</th>
+                            <th nowrap="nowrap">操作</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody id="tbodyId">
+                        <tr class="text-center" v-for="(obj,index) in resultData">
+                            <td>{{index+1}}</td>
+                            <td>{{obj.title}}</td>
+                            <td>{{obj.content}}</td>
+                            <td>{{obj.bloger}}</td>
+                            <td><button class="btn btn-primary btn-sm" 
+                                data-toggle="modal" data-target="#toastDialog"
+                                v-on:click="objectId=obj.objectId">删除</td>
+                        </tr>
+                        <tr v-show="resultData.length==0">
+                            <td colspan="5" class="text-center text-muted">
+                                <p>暂无数据...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 提示框 -->
+            <div role="dialog" class="modal fade" id="toastDialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                                <button class="close" type="button" data-dismiss="modal">
+                                        <span>&times;</span>
+                                </button>
+                            <h4 class="modal-title">
+                                <div v-show="objectId!=''">确定删除第{{objectId}}条留言吗？</div>
+                                <div v-show="objectId==''">确定删除全部留言吗？</div>
+                            </h4>
+
+                            <div class="modal-body text-right">
+                                    <button data-dismiss="modal" class="btn btn-primary btn-sm">取消</button>
+                                    <button data-dismiss="modal" class="btn btn-danger btn-sm" v-on:click="deleteBlog(objectId)">确认</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 添加数据模态框 -->
+            <div role="dialog" class="modal fade" id="addDialog">
+                    <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                        <button class="close" type="button" data-dismiss="modal">
+                                                <span>&times;</span>
+                                        </button>
+                                    <h4 class="modal-title">添加留言</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form role="form" class="form-horizontal">
+                                        <div class="form-group">
+                                            <label for="title" class="col-sm-2 control-label">留言标题:</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" v-model="title"
+                                                        id="title" placeholder="请输入留言标题">
+                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                                <label for="content" class="col-sm-2 control-label">留言内容:</label>
+                                                    <div class="col-sm-10">
+                                                        <textarea type="text" class="form-control" v-model="content"
+                                                            id="content" placeholder="请输入留言内容">
+                                                        </textarea>
+                                                    </div>
+                                            </div>
+                                            <div class="form-group">
+                                                    <label for="bloger" class="col-sm-2 control-label">留言人:</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" v-model="bloger"
+                                                                id="bloger" placeholder="请输入留言人姓名">
+                                                        </div>
+                                                </div>
+                                        
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                        <button data-dismiss="modal" class="btn btn-primary btn-sm">取消</button>
+                                        <button data-dismiss="modal" class="btn btn-danger btn-sm" v-on:click="addBlog()">保存</button>
+                                </div>
+                            </div>
+                        </div>
+            </div>
+
+</div>
+</body>
+</html>
