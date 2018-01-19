@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>测试http</title>
+    <script src="../lib/vue.js"></script>
+    <script src="../lib/vue-resource.js"></script>
+</head>
+<body>
+    <div id="box">
+      <ul>
+          <li v-for="item in myData" v-text="item"></li>
+      </ul>
+    </div>
+    <script type="text/javascript">
+    var vm = new Vue({
+                data:{
+                    wd:'a',
+                    myData:[]
+                },
+                created:function(){
+                    this.pull();
+                },
+                methods:{
+                    add:function(){
+                        this.arry.push('five');
+                    },
+                    pull:function(){
+                        this.$http.jsonp("https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su",
+                        {//请求参数
+                            params: {
+                                wd:this.wd
+                            },
+                            jsonp:'cb'
+                            }).then(function(res){
+                                console.log(res)
+                                    console.log(JSON.parse(res.bodyText).s)
+                                    //this.myData = JSON.parse(res.bodyText).s
+                                    this.myData=res.data.s;
+                                    console.log(this.myData)
+                            },function(){
+                                //console.log(1)
+                            });
+                    }
+
+                }
+            }).$mount('#box');
+    </script>
+</body>
+</html>

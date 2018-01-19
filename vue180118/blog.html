@@ -38,7 +38,7 @@
         var vm = new Vue({
             el:'#box', //选择器
             data:{     //数据
-                resultData:[], //存放展示结果数组 
+                resultData:[], //存放展示结果数组
                 title:'', //临时存放提交title
                 content:'', //临时存放提交content
                 bloger:'', //临时存放提交bloger
@@ -162,8 +162,8 @@
                     
                     <tbody id="tbodyId">
                         <tr class="text-center" v-for="(obj,index) in resultData">
-                            <td>{{index+1}}</td>
-                            <td>{{obj.title}}</td>
+                            <td v-text="index+1"></td>
+                            <td v-text="obj.title"></td>
                             <td>{{obj.content}}</td>
                             <td>{{obj.bloger}}</td>
                             <td><button class="btn btn-primary btn-sm" 
