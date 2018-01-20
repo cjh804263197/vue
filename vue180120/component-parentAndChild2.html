@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="lib/vue.js"></script>
+</head>
+<body>
+    <div id="parent">
+        <component :is="compParent"></component>
+    </div>
+
+    
+    <template id="abc">
+            <h3>parent组件->{{msg}},childMsg->{{childMsg}}</h3>
+            <component :is="compChild" :parent-msg="msg" @child-msg="get"></component>
+    </template>
+
+    <template id="def">
+            <h3>child组件->{{msg}},parentMsg->{{parentMsg}}</h3>
+            <input type="button" value="向父级发送数据" @click="sendMsg">
+    </template>
+
+    <script>
+        new Vue({
+            el:'#parent',
+            data:{
+                compParent:'my-parent'
+            },
+            components:{
+                'my-parent':{
+                    data(){
+                        return {
+                            msg:'我是父组件的数据',
+                            childMsg:'',
+                            compChild:'my-child'
+                        } 
+                    },
+                    template:'#abc',
+                    methods:{
+                        get(msg){
+                            this.childMsg=msg;
+                        }
+                    },
+                    components: {
+                        'my-child':{
+                            data(){
+                                return{
+                                    msg:'我是子组件的数据'
+                                }
+                            },
+                            props:['parentMsg'],
+                            methods:{
+                                sendMsg(){
+                                    // alert(1)
+                                    console.log(this);
+                                    this.$emit('child-msg',this.msg);
+                                }
+                            },
+                            template:'#def'
+                        }
+                    }
+                },
+            }
+        });
+        
+    </script>
+    
+</body>
+</html>
