@@ -12,9 +12,12 @@
         <my @click="change"></my>
     </div>
 
+    <!--这种写法的缺点就是没有提示-->
     <!-- <script type="x-template" id="abc">
       <h3 @click="change">{{msg}}</h3>
     </script> -->
+
+    <!--这种写法的优点就是有提示-->
     <template id="abc">
             <h3 @click="change">{{msg}}</h3>
             <h4>啦啦啦</h4>
