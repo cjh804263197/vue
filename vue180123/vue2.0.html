@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/vue.js"></script>
+</head>
+<body>
+
+    <div id="box">
+        <my></my>
+        {{msg}}
+    </div>
+
+    <template id='my'>
+        <div>
+            <h3>{{msg}}我是一个组件</h3>
+            <h3>啦啦啦</h3>
+        </div>
+    </template>
+    <script>
+        Vue.component('my',{
+            template:'#my',
+            data(){
+                return {
+                    msg:'你好'
+                }
+            }
+        });
+
+        new Vue({
+            el:'#box',
+            data:{
+                msg:'哈哈哈'
+            }
+        });
+    </script>
+</body>
+</html>
