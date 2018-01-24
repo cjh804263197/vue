@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>子组件接收父组件的数据</title>
+    <script src="../lib/vue.js"></script>
+</head>
+<body>
+
+    <div id="box">
+        <h2>我是父组件——>{{msg}}</h3>
+        <my :tra="msg"></my>
+    </div>
+
+    <template id="one">
+        <div>
+            <h3>我是子组件——>{{msg}},我接收了父级传来的——>{{tra}}</h3>
+            <input type="button" value="更改" @click="change">
+        </div>
+    </template>
+    <script>
+
+        new Vue({
+           el:'#box',
+           data:{
+               msg:'我是父组件的数据'
+           },
+           components:{
+               'my':{
+                   template:'#one',
+                   data(){
+                       return {
+                           msg:'我是子组件的数据'
+                       }
+                   },
+                   props:['tra'],
+                   methods:{
+                       change(){
+                           this.tra='改变了'
+                       }
+                   }
+               }
+           }
+        });
+    </script>
+</body>
+</html>

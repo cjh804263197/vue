@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="思路:子组件获取到父组件的值后，将其赋值给自身的一个值，然后当自身的这个值改变之后会触发updated钩子函数，在该钩子函数中调用子组件向父组件传值的操作，就可变相完成了子父组件数据同步问题" />
+    <title>子组件接收父组件的数据,修改数据并同步方法二</title>
+    <script src="../lib/vue.js"></script>
+</head>
+<body>
+
+    <div id="box">
+        <h2>我是父组件——>{{msg}}</h3>
+        <my :parent-data="msg" @child-msg="get"></my>
+    </div>
+
+    <template id="one">
+        <div>
+            <h3>我是子组件——>{{msg}},我接收的父组件的数据——>{{parentMsg}}</h3>
+            <input type="button" value="更改" @click="change">
+        </div>
+    </template>
+    <script>
+
+        new Vue({
+           el:'#box',
+           data:{
+               msg:'我是父组件的数据'
+           },
+           components:{
+               'my':{
+                   template:'#one',
+                   data(){
+                       return {
+                           msg:'我是子组件的数据',
+                           parentMsg:''
+                       }
+                   },
+                   beforeMount(){//要在beforebeforeMount或之前来赋值
+                       this.parentMsg=this.parentData;
+                   },
+                   updated(){//在模板数据发生变化之后调用
+                       this.sendMsg();//调用向父组件传值的方法
+                   },
+                   props:['parentData'],
+                   methods:{
+                       change(){
+                           this.parentMsg='子组件改变了父组件的msg';
+                       },
+                       sendMsg(){
+                            this.$emit('child-msg',this.parentMsg);
+                       }
+                   }
+               }
+           },
+           methods:{
+               get(parentMsg){//父组件接收子组件传来数据的回调函数
+                   this.msg=parentMsg;//更新父组件自身的数据变量
+               }
+           }
+        });
+    </script>
+</body>
+</html>

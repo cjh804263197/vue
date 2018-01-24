@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<script src="../lib/vue.js"></script>
+<body>
+    <div id="box">
+       <h3>{{msg | toDou(1,2)}}</h3>
+    </div>
+    <script>
+       Vue.filter('toDou',function(input,a,b){
+           alert(a+','+b);
+           return input>9?input:'0'+input;
+       });
+
+        new Vue({
+           el:'#box',
+           data:{
+               msg:9
+           }
+        });
+    </script>
+</body>
+</html>

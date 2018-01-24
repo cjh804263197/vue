@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>单一事件管理组件通讯</title>
+</head>
+<script src="../lib/vue.js"></script>
+<body>
+    <div id="box">
+        <aaa></aaa>
+        <bbb></bbb>
+        <ccc></ccc>
+    </div>
+
+    <template id="aaa">
+        <div>
+            <span>我是aaa组件——>{{msg}}</span>
+            <input type="button" value="把A组件数据给C" @click="sendMsg">
+        </div>
+    </template>
+
+    <template id="bbb">
+        <div>
+            <span>我是bbb组件——>{{msg}}</span>
+            <input type="button" value="把B组件数据给C" @click="sendMsg">
+        </div>
+    </template>
+
+    <template id="ccc">
+        <div>
+            <h3>我是ccc组件</h3>
+            <h3 v-show="aMsg != ''">我接受的A组件的数据——>{{aMsg}}</h3>
+            <h3 v-show="bMsg != ''">我接受的B组件的数据——>{{bMsg}}</h3>
+        </div>
+        
+    </template>
+
+    <script>
+        //初始化一个空的组件对象来存放单一事件
+        var Event = new Vue();
+
+        var A = {
+            template:'#aaa',
+            data(){
+                return{
+                    msg:'我是A数据'
+                }
+            },
+            methods:{
+                sendMsg(){
+                    Event.$emit('a-msg',this.msg);
+                }
+            }
+        };
+        var B = {
+            template:'#bbb',
+            data(){
+                return{
+                    msg:'我是B数据'
+                }
+            },
+            methods:{
+                sendMsg(){
+                    Event.$emit('b-msg',this.msg);
+                }
+            }
+        };
+        var C = {
+            template:'#ccc',
+            data(){
+                return{
+                    msg:'我是C数据',
+                    aMsg:'',
+                    bMsg:''
+                }
+            },
+            mounted(){
+                _this = this;
+                Event.$on('a-msg',function(msg){
+                    //alert(msg);
+                    _this.aMsg=msg;
+                });
+                Event.$on('b-msg',function(msg){
+                    //alert(msg);
+                    _this.bMsg=msg;
+                });
+            }
+        };
+
+        new Vue({
+            el:'#box',
+            data:{
+
+            },
+            components: {
+                'aaa':A,
+                'bbb':B,
+                'ccc':C
+            }
+        });
+    </script>
+</body>
+</html>

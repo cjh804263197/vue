@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<script src="../lib/vue.js"></script>
+<body>
+    <div id="box">
+        <input type="button" value="添加" @click="add">
+        <ul>
+            <li v-for="(val,index) in array" :key="index">
+                {{val}} {{index}}
+            </li>
+        </ul>
+    </div>
+    <script>
+        new Vue({
+           el:'#box',
+           data:{
+               array:['one','two','three','four']
+           },
+           methods: {
+               add(){
+                   this.array.push('five');
+               }
+           }
+        });
+    </script>
+</body>
+</html>
