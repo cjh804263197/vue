@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue2.0路由的子路由与传参</title>
+    <style>
+        .router-link-active{
+            font-size: 20px;
+            color: #f60;
+        }
+    </style>
+    <script src="../lib/vue.js"></script>
+    <script src="../lib/vue-router.js"></script>
+</head>
+<body>
+    <div id="box">
+        <div>
+            <router-link to="/home">主页</router-link>
+            <router-link to="/user">用户</router-link>
+        </div>
+       <div>
+            <router-view></router-view>
+       </div>
+                 
+    </div>
+
+    <template id="homeTemp">
+        <h3>我是主页</h3>
+    </template>
+
+    <template id="userTemp">
+        <div>
+            <h3>我是用户信息</h3>
+            <ul>
+                <li>
+                    <router-link to="/user/Lucy/24">Lucy</router-link>
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    <router-link to="/user/Boom/23">Boom</router-link>
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    <router-link to="/user/Eric/23">Eric</router-link>
+                </li>
+                </ul>
+            <div>
+                <router-view></router-view>
+            </div>
+        </div>
+        
+    </template>
+
+    <template id="userDetailTemp">
+        <div>
+            <h4>{{$route.params}}</h4>
+        </div>
+    </template>
+
+    <script>
+        //准备组件
+        var Home={
+            template:'#homeTemp'
+        };
+        var User = {
+            template:'#userTemp'
+        };
+
+        var UserDetail = {
+            template:'#userDetailTemp'
+        };
+
+        //配置路由 注意:根路径要加上'/',非根路径不要加'/'
+        var routers=[
+            {
+                path:'/home',
+                component:Home
+            },
+            {
+                path:'/user',
+                component:User,
+                children:[
+                    {
+                        path:':username/:age',
+                        component:UserDetail
+                    }
+                ]
+            },
+            {
+                path:'/',
+                redirect:'/home'
+            }
+        ];
+
+        //生成路由实例 注意：VueRouter对象中接收的是routes变量
+        var router = new VueRouter({
+            routes:routers
+        });
+
+        //最后挂载到Vue上
+        new Vue({
+           router,
+           el:'#box'
+        });
+    </script>
+</body>
+</html>

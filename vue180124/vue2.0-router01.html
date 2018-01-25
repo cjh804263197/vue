@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue2.0路由基本</title>
+    <style>
+        .router-link-active{
+            font-size: 20px;
+            color: #f60;
+        }
+    </style>
+    <script src="../lib/vue.js"></script>
+    <script src="../lib/vue-router.js"></script>
+</head>
+<body>
+    <div id="box">
+        <div>
+            <router-link to="/home">主页</router-link>
+            <router-link to="/news">新闻</router-link>
+        </div>
+       <div>
+            <router-view></router-view>
+       </div>
+                 
+    </div>
+
+    <template id="homeTemp">
+        <h3>我是主页</h3>
+    </template>
+
+    <template id="newsTemp">
+        <h3>我是新闻</h3>
+    </template>
+
+    <script>
+        //准备组件
+        var Home={
+            template:'#homeTemp'
+        };
+        var News = {
+            template:'#newsTemp'
+        };
+
+        //配置路由 
+        var routers=[
+            {path:'/home',component:Home},
+            {path:'/news',component:News},
+            {path:'/',redirect:'/home'}
+        ];
+
+        //生成路由实例 注意：VueRouter对象中接收的是routes变量
+        var router = new VueRouter({
+            routes:routers
+        });
+
+        //最后挂载到Vue上
+        new Vue({
+           router,
+           el:'#box'
+        });
+    </script>
+</body>
+</html>
