@@ -3,7 +3,8 @@
     <input type="button" value="增加" @click="increment">
     <input type="button" value="减少" @click="decrement">
     <input type="button" value="当前数字为偶数时增加1,为奇数时增加3" @click="oddClick">
-    <h2>当前数字:{{count}},它是{{odd}}</h2>
+    <input type="button" value="皮肤更换" @click="changeShink">
+    <h2>当前数字:{{count}},它是{{odd}},皮肤是否显示:{{skink}}</h2>
   </div>
 </template>
 
@@ -14,12 +15,14 @@ import {mapActions,mapGetters} from 'vuex'
 export default {
   computed: mapGetters([
     'count',
-    'odd'
+    'odd',
+    'skink'
   ]),
   methods:mapActions([
     'increment',
     'decrement',
-    'oddClick'
+    'oddClick',
+    'changeShink'
   ])
 }
 </script>

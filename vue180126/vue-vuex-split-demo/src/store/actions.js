@@ -21,5 +21,10 @@ export default {
             commit(types.INCREMENT);
             commit(types.INCREMENT);
         }
+    },
+    changeShink:function({
+        commit
+    }){
+        commit(types.CHANGESKINK);
     }
 }

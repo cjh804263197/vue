@@ -1,4 +1,4 @@
-import {INCREMENT,DECREMENT} from './types'
+import {INCREMENT,DECREMENT,CHANGESKINK} from './types'
 
 export default{
     [INCREMENT](state){
@@ -6,5 +6,12 @@ export default{
     },
     [DECREMENT](state){
         state.count--;
+    },
+    [CHANGESKINK](state){
+        if(state.skink==1){
+            state.skink--;
+        }else{
+            state.skink++;
+        }
     }
 }
